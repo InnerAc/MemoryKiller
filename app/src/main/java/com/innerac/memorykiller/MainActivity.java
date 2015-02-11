@@ -1,19 +1,130 @@
 package com.innerac.memorykiller;
 
+import android.app.Activity;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.os.Handler;
 
 
-public class MainActivity extends ActionBarActivity {
+import com.innerac.memorykiller.tools.StreamTools;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.logging.LogRecord;
+
+
+public class MainActivity extends Activity {
+
+    private static final int ENTER_HOME = 0;
+    private static final int SHOW_UPDATE_DIALOG = 1;
+    TextView version;
+
+    private String new_version;
+    private String new_description;
+    private String new_apkurl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        init();
+    }
+    private void init(){
+        version = (TextView)findViewById(R.id.version);
+        version.setText("alpha "+getVersionName());
+
+        checkUpdate();
+    }
+    /*
+    获取版本号
+     */
+    private String getVersionName(){
+        //管理手机的APK
+        PackageManager pm = getPackageManager();
+        PackageInfo pinfo = null;
+        try {
+            pinfo = pm.getPackageInfo(getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return pinfo.versionName;
     }
 
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg){
+            super.handleMessage(msg);
+            switch(msg.what){
+                case SHOW_UPDATE_DIALOG:
+                    Log.i("tag","显示升级对话框");
+                    break;
+                case ENTER_HOME:
+                    Log.i("tag","进入主界面");
+                    break;
+            }
+        }
+    };
+    /*
+    检查升级
+     */
+    private void checkUpdate(){
+        new Thread(){
+            public void run(){
+                Message mes = Message.obtain();
+
+                try {
+
+
+                    URL url = new URL(getString(R.string.update_url));
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("GET");
+                    conn.setConnectTimeout(400);
+                    int code = conn.getResponseCode();
+                    if(code == 200){
+                        InputStream is = conn.getInputStream();
+                        //
+                        String result = StreamTools.readFromStream(is);
+                        //json
+                        JSONObject obj = new JSONObject(result);
+                        new_version = (String) obj.get("version");
+                        new_description = (String) obj.get("description");
+                        new_apkurl = (String) obj.get("apkurl");
+
+                        if(getVersionName().equals(new_version)){
+                            //go
+                            mes.what=ENTER_HOME;
+                        }else{
+                            mes.what=SHOW_UPDATE_DIALOG;
+                        }
+                    }
+                } catch (ProtocolException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } finally {
+                    handler.sendMessage(mes);
+                }
+            };
+        }.start();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -21,6 +132,8 @@ public class MainActivity extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
