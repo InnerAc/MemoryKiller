@@ -42,7 +42,7 @@
     </RelativeLayout>
 
     <FrameLayout
-        android:layout_weight="50"
+        android:layout_weight="100"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
 
@@ -70,44 +70,49 @@
                 android:layout_height="wrap_content"
                 android:text="正在读取应用程序数据..." />
         </LinearLayout>
-
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#ff888888"
+            android:textColor="#ffffff" />
     </FrameLayout>
 
-    <!--<LinearLayout-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="horizontal" >-->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
 
-        <!--<Button-->
-            <!--android:textSize="14sp"-->
-            <!--android:onClick="selectAll"-->
-            <!--android:layout_width="0dip"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:text="全选" />-->
+        <Button
+            android:textSize="14sp"
+            android:onClick="selectAll"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="全选" />
 
-        <!--<Button-->
-            <!--android:textSize="14sp"-->
-            <!--android:onClick="selectOppo"-->
-            <!--android:layout_width="0dip"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:text="反选" />-->
+        <Button
+            android:textSize="14sp"
+            android:onClick="unSelectAll"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="反选" />
 
-        <!--<Button-->
-            <!--android:textSize="14sp"-->
-            <!--android:onClick="killAll"-->
-            <!--android:layout_width="0dip"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:text="一键清理" />-->
+        <Button
+            android:textSize="14sp"
+            android:onClick="killAll"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="清理" />
 
-        <!--<Button-->
-            <!--android:textSize="14sp"-->
-            <!--android:onClick="enterSetting"-->
-            <!--android:layout_width="0dip"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:text="设置" />-->
-    <!--</LinearLayout>-->
+        <Button
+            android:textSize="14sp"
+            android:onClick="enterSetting"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="设置" />
+    </LinearLayout>
 </LinearLayout>

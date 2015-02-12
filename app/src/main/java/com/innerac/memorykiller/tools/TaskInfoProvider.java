@@ -48,7 +48,11 @@ public class TaskInfoProvider {
 //                if((appinfo.flags&ApplicationInfo.FLAG_SYSTEM)==0){
 //                    isuser = true;
 //                }
-                boolean isuser = appinfo.flags != ApplicationInfo.FLAG_SYSTEM;
+               // boolean isuser = appinfo.flags != ApplicationInfo.FLAG_SYSTEM;
+                boolean isuser = true;
+                if((appinfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0){
+                    isuser = false;
+                }
 
                 taskInfo.setIcon(icon);
                 taskInfo.setName(name);

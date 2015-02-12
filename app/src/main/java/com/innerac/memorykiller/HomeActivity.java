@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.innerac.memorykiller.objs.TaskInfo;
 import com.innerac.memorykiller.tools.SystemInfoTools;
@@ -275,6 +276,7 @@ public class HomeActivity extends Activity {
         fillDate();
     }
     public void enterSetting(View view){
+        Toast.makeText(getApplicationContext(), "SORRY 暂时还没此功能", Toast.LENGTH_SHORT).show();
 
     }
 }
