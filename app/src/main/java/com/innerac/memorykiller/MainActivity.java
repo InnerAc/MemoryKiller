@@ -1,17 +1,24 @@
 package com.innerac.memorykiller;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Environment;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.animation.AlphaAnimation;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.os.Handler;
+import android.widget.Toast;
+
 
 
 import com.innerac.memorykiller.tools.StreamTools;
@@ -19,6 +26,7 @@ import com.innerac.memorykiller.tools.StreamTools;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -28,11 +36,16 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.logging.LogRecord;
 
+import javax.xml.datatype.Duration;
+
 
 public class MainActivity extends Activity {
 
     private static final int ENTER_HOME = 0;
     private static final int SHOW_UPDATE_DIALOG = 1;
+    private static final int URL_ERRER = 2;
+    private static final int NETWORD_ERRER = 3;
+    private static final int JSON_ERRER = 4;
     TextView version;
 
     private String new_version;
@@ -47,9 +60,11 @@ public class MainActivity extends Activity {
     }
     private void init(){
         version = (TextView)findViewById(R.id.version);
-        version.setText("alpha "+getVersionName());
-
+        version.setText("alpha " + getVersionName());
         checkUpdate();
+        AlphaAnimation travle = new AlphaAnimation(0.1f,1.0f);
+        travle.setDuration(800);
+        findViewById(R.id.actvity_welcome).startAnimation(travle);
     }
     /*
     获取版本号
@@ -76,6 +91,22 @@ public class MainActivity extends Activity {
                     break;
                 case ENTER_HOME:
                     Log.i("tag","进入主界面");
+                    enterHome();
+                    break;
+                case URL_ERRER:
+                    Log.i("tag", "地址错误");
+                    Toast.makeText(getApplicationContext(),"URL ERROR",Toast.LENGTH_SHORT).show();
+                    enterHome();
+                    break;
+                case NETWORD_ERRER:
+                    Log.i("tag","连接错误");
+                    Toast.makeText(getApplicationContext(),"NETWORK ERROR",Toast.LENGTH_SHORT).show();
+                    enterHome();
+                    break;
+                case JSON_ERRER:
+                    Log.i("tag","解析出错");
+                    Toast.makeText(getApplicationContext(),"JSON ERROR",Toast.LENGTH_SHORT).show();
+                    enterHome();
                     break;
             }
         }
@@ -114,16 +145,28 @@ public class MainActivity extends Activity {
                         }
                     }
                 } catch (ProtocolException e) {
+                    mes.what=URL_ERRER;
                     e.printStackTrace();
                 } catch (IOException e) {
+                    mes.what=NETWORD_ERRER;
                     e.printStackTrace();
                 } catch (JSONException e) {
+                    mes.what=JSON_ERRER;
                     e.printStackTrace();
                 } finally {
                     handler.sendMessage(mes);
                 }
             };
         }.start();
+    }
+
+    /*
+    进入主界面
+     */
+    private void enterHome(){
+        Intent intent = new Intent(this,HomeActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override
