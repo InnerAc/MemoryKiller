@@ -36,8 +36,8 @@
 
     <CheckBox
         android:id="@+id/cb"
-        android:focusable="false"
-        android:clickable="false"
+        android:focusable="true"
+        android:clickable="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
