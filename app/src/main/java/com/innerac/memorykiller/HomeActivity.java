@@ -2,21 +2,26 @@ package com.innerac.memorykiller;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.innerac.memorykiller.objs.TaskInfo;
 import com.innerac.memorykiller.tools.SystemInfoTools;
 import com.innerac.memorykiller.tools.TaskInfoProvider;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -27,7 +32,10 @@ public class HomeActivity extends Activity {
     private LinearLayout ll_loading;
     private ListView lv_task_manager;
     private List<TaskInfo> allTaskInfos;
+    private List<TaskInfo> useTaskInfos;
+    private List<TaskInfo> sysTaskInfos;
 
+    private TaskManagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,51 +56,107 @@ public class HomeActivity extends Activity {
         lv_task_manager = (ListView) findViewById(R.id.lv_taskmanager);
 
         fillDate();
+
     }
     /*
     填充数据
      */
     private void fillDate() {
+
         ll_loading.setVisibility(View.VISIBLE);
         new Thread(){
             public void run(){
-                try {
-                    allTaskInfos = TaskInfoProvider.getTaskInfos(getApplicationContext());
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
+
+                allTaskInfos = TaskInfoProvider.getTaskInfos(getApplicationContext());
+                useTaskInfos = new ArrayList<TaskInfo>();
+                sysTaskInfos = new ArrayList<TaskInfo>();
+                for(TaskInfo info:allTaskInfos){
+                    if(info.isUserTask()){
+                        useTaskInfos.add(info);
+                    }else{
+                        sysTaskInfos.add(info);
+                    }
                 }
+                Log.i("tag",useTaskInfos.size()+" ____----____ "+sysTaskInfos.size());
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         ll_loading.setVisibility(View.INVISIBLE);
-
+                        adapter = new TaskManagerAdapter();
+                        lv_task_manager.setAdapter(adapter);
                     }
                 });
             }
-        };
+        }.start();
     }
 
     private class TaskManagerAdapter extends BaseAdapter{
 
         @Override
         public int getCount() {
-            return 0;
+
+            return allTaskInfos.size()+2;
         }
 
         @Override
         public Object getItem(int position) {
+
             return null;
         }
 
         @Override
         public long getItemId(int position) {
+
             return 0;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            return null;
+            TaskInfo tmpTaskInfo;
+            if(position == 0){
+                //用户进程标签
+                TextView user_title = new TextView(getApplicationContext());
+                user_title.setText("用户进程"+useTaskInfos.size()+"个");
+                user_title.setBackgroundColor(Color.GRAY);
+                user_title.setTextColor(Color.WHITE);
+                return user_title;
+            }else if(position == useTaskInfos.size()+1){
+                TextView sys_title = new TextView(getApplicationContext());
+                sys_title.setText("系统进程"+sysTaskInfos.size()+"个");
+                sys_title.setBackgroundColor(Color.GRAY);
+                sys_title.setTextColor(Color.WHITE);
+                return sys_title;
+            }else if(position <= useTaskInfos.size()){
+                tmpTaskInfo = useTaskInfos.get(position-1);
+            }else{
+                tmpTaskInfo = sysTaskInfos.get(position-2-useTaskInfos.size());
+            }
+
+            View view;
+            ViewHolder holder;
+            if(convertView != null && convertView instanceof RelativeLayout){
+                view = convertView;
+                holder = (ViewHolder) view.getTag();
+            }else{
+                view = View.inflate(getApplicationContext(),R.layout.list_task_item,null);
+                holder = new ViewHolder();
+                holder.iv_icon = (ImageView) view.findViewById(R.id.iv_icon);
+                holder.tv_name = (TextView) view.findViewById(R.id.tv_name);
+                holder.tv_memsize = (TextView) view.findViewById(R.id.tv_memsize);
+                view.setTag(holder);
+            }
+            holder.iv_icon.setImageDrawable(tmpTaskInfo.getIcon());
+            holder.tv_name.setText(tmpTaskInfo.getName());
+            holder.tv_memsize.setText("内存占用:"+Formatter.formatFileSize(getApplicationContext(),tmpTaskInfo.getMemsize()));
+
+            return view;
         }
+    }
+
+    static class ViewHolder{
+        ImageView iv_icon;
+        TextView tv_name;
+        TextView tv_memsize;
     }
 
     @Override
