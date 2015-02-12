@@ -87,24 +87,26 @@ public class MainActivity extends Activity {
             super.handleMessage(msg);
             switch(msg.what){
                 case SHOW_UPDATE_DIALOG:
-                    Log.i("tag","显示升级对话框");
+                    //Log.i("tag","显示升级对话框");
+                    Toast.makeText(getApplicationContext(),"有更新",Toast.LENGTH_SHORT).show();
+                    enterHome();
                     break;
                 case ENTER_HOME:
-                    Log.i("tag","进入主界面");
+                   // Log.i("tag","进入主界面");
                     enterHome();
                     break;
                 case URL_ERRER:
-                    Log.i("tag", "地址错误");
+                    //Log.i("tag", "地址错误");
                     Toast.makeText(getApplicationContext(),"URL ERROR",Toast.LENGTH_SHORT).show();
                     enterHome();
                     break;
                 case NETWORD_ERRER:
-                    Log.i("tag","连接错误");
+                   // Log.i("tag","连接错误");
                     Toast.makeText(getApplicationContext(),"NETWORK ERROR",Toast.LENGTH_SHORT).show();
                     enterHome();
                     break;
                 case JSON_ERRER:
-                    Log.i("tag","解析出错");
+                   // Log.i("tag","解析出错");
                     Toast.makeText(getApplicationContext(),"JSON ERROR",Toast.LENGTH_SHORT).show();
                     enterHome();
                     break;
