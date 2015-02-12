@@ -2,6 +2,7 @@ package com.innerac.memorykiller;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.format.Formatter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -26,7 +27,9 @@ public class HomeActivity extends Activity {
         running_process_count = (TextView) findViewById(R.id.running_process_count);
         leave_mem_info = (TextView) findViewById(R.id.leave_mem_info);
         running_process_count.setText("运行中进程: "+ SystemInfoTools.getRunningProcessCount(this));
-        leave_mem_info.setText("剩余/总内存: "+SystemInfoTools.getAvailMem(this)+"/"+SystemInfoTools.getTotalMem(this));
+        long avamem = SystemInfoTools.getAvailMem(this);
+        long totmem = SystemInfoTools.getTotalMem(this);
+        leave_mem_info.setText("剩余/总内存: "+ Formatter.formatFileSize(this,avamem)+"/"+Formatter.formatFileSize(this,totmem));
     }
 
     @Override
