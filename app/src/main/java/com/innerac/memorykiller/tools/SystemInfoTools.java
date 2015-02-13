@@ -36,12 +36,12 @@ public class SystemInfoTools {
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static long getTotalMem(Context context){
-        //4.0API以上
+//4.0API以上
 //        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 //        ActivityManager.MemoryInfo outInfo = new ActivityManager.MemoryInfo();
 //        am.getMemoryInfo(outInfo);
 //        return outInfo.totalMem;
-        //4.0API以下
+//4.0API以下
         try{
             File file = new File("/proc/meminfo");
             FileInputStream fis = new FileInputStream(file);
