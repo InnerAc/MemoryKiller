@@ -2,11 +2,11 @@ package com.innerac.memorykiller;
 
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.content.pm.PackageManager;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.Formatter;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,9 +23,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.innerac.memorykiller.objs.TaskInfo;
-import com.innerac.memorykiller.tools.CheckUpdate;
+import com.innerac.memorykiller.objs.CheckUpdate;
 import com.innerac.memorykiller.tools.SystemInfoTools;
 import com.innerac.memorykiller.tools.TaskInfoProvider;
+import com.innerac.memorykiller.update.UpdateManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -277,13 +278,39 @@ public class HomeActivity extends Activity {
         fillDate();
     }
     public void enterSetting(View view){
-        Toast.makeText(getApplicationContext(), "SORRY 暂时还没此功能"+ CheckUpdate.new_description, Toast.LENGTH_SHORT).show();
-
+        if(CheckUpdate.is_update){
+            showUpdateDialog();
+        }else{
+            showNotUpdateDialog();
+        }
     }
 
     public void onBackPressed(){
-        Log.i("tag","onBackPressed");
-        android.os.Process.killProcess(android.os.Process.myPid());   //获取PID
-        System.exit(0);   //常规java、c#的标准退出法，返回值为0代表正常退出
+        //Log.i("tag","onBackPressed");
+        //结束进程
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(0);
+    }
+
+    /*
+    升级
+     */
+    protected void showUpdateDialog() {
+        UpdateManager um = new UpdateManager(this);
+        um.checkUpdateInfo();
+    }
+    protected void showNotUpdateDialog(){
+        AlertDialog.Builder build = new AlertDialog.Builder(this);
+        build.setTitle("应用更新");
+        build.setMessage("您的应用已经是最新版本");
+        build.setPositiveButton("返回", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+            }
+        });
+        build.show();
     }
 }
