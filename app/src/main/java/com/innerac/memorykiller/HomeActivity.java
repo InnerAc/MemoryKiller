@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.innerac.memorykiller.objs.TaskInfo;
+import com.innerac.memorykiller.tools.CheckUpdate;
 import com.innerac.memorykiller.tools.SystemInfoTools;
 import com.innerac.memorykiller.tools.TaskInfoProvider;
 
@@ -276,7 +277,7 @@ public class HomeActivity extends Activity {
         fillDate();
     }
     public void enterSetting(View view){
-        Toast.makeText(getApplicationContext(), "SORRY 暂时还没此功能", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "SORRY 暂时还没此功能"+ CheckUpdate.new_description, Toast.LENGTH_SHORT).show();
 
     }
 }
