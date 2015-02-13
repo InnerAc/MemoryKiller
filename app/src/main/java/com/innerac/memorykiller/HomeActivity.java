@@ -302,7 +302,7 @@ public class HomeActivity extends Activity {
     protected void showNotUpdateDialog(){
         AlertDialog.Builder build = new AlertDialog.Builder(this);
         build.setTitle("应用更新");
-        build.setMessage("您的应用已经是最新版本");
+        build.setMessage("您的应用已经是最新版本\n当前版本: "+CheckUpdate.old_version);
         build.setPositiveButton("返回", new DialogInterface.OnClickListener() {
 
             @Override

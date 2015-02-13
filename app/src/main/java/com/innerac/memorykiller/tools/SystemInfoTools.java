@@ -6,6 +6,10 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 /**
@@ -32,9 +36,27 @@ public class SystemInfoTools {
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static long getTotalMem(Context context){
-        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        ActivityManager.MemoryInfo outInfo = new ActivityManager.MemoryInfo();
-        am.getMemoryInfo(outInfo);
-        return outInfo.totalMem;
+        //4.0API以上
+//        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+//        ActivityManager.MemoryInfo outInfo = new ActivityManager.MemoryInfo();
+//        am.getMemoryInfo(outInfo);
+//        return outInfo.totalMem;
+        //4.0API以下
+        try{
+            File file = new File("/proc/meminfo");
+            FileInputStream fis = new FileInputStream(file);
+            BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+            String line = br.readLine();
+            StringBuffer sb = new StringBuffer();
+            for (char c : line.toCharArray()) {
+                if(c >= '0' && c <= '9'){
+                    sb.append(c);
+                }
+            }
+            return Integer.parseInt(sb.toString())*1024l;
+        }catch(Exception e){
+            e.printStackTrace();
+            return 0;
+        }
     }
 }

@@ -31,6 +31,7 @@ public class CheckUpdate {
     public static String new_description;
     public static String new_apkurl;
     public static boolean is_update;
+    public static String old_version;
 
     /*
     检查升级

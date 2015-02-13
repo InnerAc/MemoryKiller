@@ -66,6 +66,7 @@ public class MainActivity extends Activity {
     private void init(){
         version = (TextView)findViewById(R.id.version);
         version.setText("beta " + getVersionName());
+        CheckUpdate.old_version = getVersionName();
         CheckUpdate.checkUpdate(getString(R.string.update_url), getVersionName(), handler);
         AlphaAnimation travle = new AlphaAnimation(0.1f,1.0f);
         travle.setDuration(800);

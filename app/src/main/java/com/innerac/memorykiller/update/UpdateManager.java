@@ -32,13 +32,12 @@ public class UpdateManager {
     private Context mContext;
 
     //提示语
-    private String updateMsg = CheckUpdate.new_description;
+    private String updateMsg = CheckUpdate.new_description + "\n"+CheckUpdate.old_version+" -> "+CheckUpdate.new_version;
 
     //返回的安装包url
     private String apkUrl = CheckUpdate.new_apkurl;
 
 
-    private Dialog noticeDialog;
 
     private Dialog downloadDialog;
     /* 下载包安装路径 */
@@ -109,8 +108,6 @@ public class UpdateManager {
             }
         });
         build.show();
-        noticeDialog = build.create();
-        noticeDialog.show();
     }
 
 
