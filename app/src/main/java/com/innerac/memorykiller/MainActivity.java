@@ -1,42 +1,20 @@
 package com.innerac.memorykiller;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Environment;
 import android.os.Message;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.AlphaAnimation;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.os.Handler;
 import android.widget.Toast;
 
 
-import com.innerac.memorykiller.tools.CheckUpdate;
-import com.innerac.memorykiller.tools.StreamTools;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.ProtocolException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.logging.LogRecord;
-
-import javax.xml.datatype.Duration;
+import com.innerac.memorykiller.objs.CheckUpdate;
 
 
 public class MainActivity extends Activity {
@@ -87,8 +65,8 @@ public class MainActivity extends Activity {
 
     private void init(){
         version = (TextView)findViewById(R.id.version);
-        version.setText("alpha " + getVersionName());
-        CheckUpdate.checkUpdate(getString(R.string.update_url),getVersionName(),handler);
+        version.setText("beta " + getVersionName());
+        CheckUpdate.checkUpdate(getString(R.string.update_url), getVersionName(), handler);
         AlphaAnimation travle = new AlphaAnimation(0.1f,1.0f);
         travle.setDuration(800);
         findViewById(R.id.actvity_welcome).startAnimation(travle);

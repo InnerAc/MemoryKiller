@@ -1,10 +1,11 @@
-package com.innerac.memorykiller.tools;
+package com.innerac.memorykiller.objs;
 
 import android.app.Activity;
 import android.os.Handler;
 import android.os.Message;
 
 import com.innerac.memorykiller.R;
+import com.innerac.memorykiller.tools.StreamTools;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,7 +17,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 
 /**
- * Created by InnerAce on 2015/2/13.
+ * 检查更新
  */
 public class CheckUpdate {
 
@@ -29,6 +30,7 @@ public class CheckUpdate {
     public static String new_version;
     public static String new_description;
     public static String new_apkurl;
+    public static boolean is_update;
 
     /*
     检查升级
@@ -59,7 +61,9 @@ public class CheckUpdate {
                         if(version.equals(new_version)){
                             //go
                             mes.what=ENTER_HOME;
+                            is_update = false;
                         }else{
+                            is_update = true;
                             mes.what=SHOW_UPDATE_DIALOG;
                         }
                     }
@@ -75,7 +79,7 @@ public class CheckUpdate {
                 } finally {
                     handler.sendMessage(mes);
                 }
-            };
+            }
         }.start();
     }
 }
