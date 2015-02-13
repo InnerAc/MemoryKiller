@@ -280,4 +280,10 @@ public class HomeActivity extends Activity {
         Toast.makeText(getApplicationContext(), "SORRY 暂时还没此功能"+ CheckUpdate.new_description, Toast.LENGTH_SHORT).show();
 
     }
+
+    public void onBackPressed(){
+        Log.i("tag","onBackPressed");
+        android.os.Process.killProcess(android.os.Process.myPid());   //获取PID
+        System.exit(0);   //常规java、c#的标准退出法，返回值为0代表正常退出
+    }
 }
