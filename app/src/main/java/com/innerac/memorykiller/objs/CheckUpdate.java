@@ -36,7 +36,7 @@ public class CheckUpdate {
     /*
     检查升级
      */
-    public static void checkUpdate(final String update_url, final String version,final Handler handler){
+    public static void checkUpdate(final String update_url, final String version, final Handler handler, final long startTime){
         new Thread(){
             public void run(){
                 Message mes = Message.obtain();
@@ -78,6 +78,16 @@ public class CheckUpdate {
                     mes.what=JSON_ERRER;
                     e.printStackTrace();
                 } finally {
+                    long endTime = System.currentTimeMillis();
+                    long dTime = endTime - startTime;
+                    if (dTime < 1000) {
+                        try {
+                            Thread.sleep(1000 - dTime);
+                        } catch (InterruptedException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
                     handler.sendMessage(mes);
                 }
             }

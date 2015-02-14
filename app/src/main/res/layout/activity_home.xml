@@ -50,7 +50,8 @@
             android:id="@+id/lv_taskmanager"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:fastScrollEnabled="true" >
+            android:fastScrollEnabled="true"
+            android:background="@color/background_floating_material_light">
         </ListView>
 
         <LinearLayout
@@ -89,7 +90,10 @@
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="全选" />
+            android:text="全选"
+            android:background="@drawable/abc_list_selector_background_transition_holo_light"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp" />
 
         <Button
             android:textSize="14sp"
@@ -97,7 +101,10 @@
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="反选" />
+            android:text="反选"
+            android:background="@drawable/abc_list_selector_background_transition_holo_light"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp" />
 
         <Button
             android:textSize="14sp"
@@ -105,7 +112,11 @@
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="清理" />
+            android:text="清理"
+            android:background="@drawable/abc_list_selector_background_transition_holo_light"
+            android:shadowColor="#ff7998ff"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp" />
 
         <Button
             android:textSize="14sp"
@@ -113,6 +124,10 @@
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="更新" />
+            android:text="更新"
+            android:background="@drawable/abc_list_selector_background_transition_holo_light"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp" />
+
     </LinearLayout>
 </LinearLayout>
