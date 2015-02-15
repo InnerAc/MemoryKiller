@@ -31,33 +31,32 @@ public class MainActivity extends Activity {
         init();
     }
 
+    /*
+    创建handler对象，显示 检查更新 后的数据并且执行相应动作
+    Create handler,get the message of CheckUpdate()
+     */
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg){
             super.handleMessage(msg);
             switch(msg.what){
                 case CheckUpdate.SHOW_UPDATE_DIALOG:
-                    //Log.i("tag","显示升级对话框");
-                    Toast.makeText(getApplicationContext(),"有更新",Toast.LENGTH_SHORT).show();
+                    showToast("有更新");
                     enterHome();
                     break;
                 case CheckUpdate.ENTER_HOME:
-                    // Log.i("tag","进入主界面");
                     enterHome();
                     break;
                 case CheckUpdate.URL_ERRER:
-                    //Log.i("tag", "地址错误");
-                    Toast.makeText(getApplicationContext(),"URL ERROR",Toast.LENGTH_SHORT).show();
+                    showToast("更新地址错误");
                     enterHome();
                     break;
                 case CheckUpdate.NETWORD_ERRER:
-                    // Log.i("tag","连接错误");
-                    Toast.makeText(getApplicationContext(),"NETWORK ERROR",Toast.LENGTH_SHORT).show();
+                    showToast("网络连接错误");
                     enterHome();
                     break;
                 case CheckUpdate.JSON_ERRER:
-                    // Log.i("tag","解析出错");
-                    Toast.makeText(getApplicationContext(),"JSON ERROR",Toast.LENGTH_SHORT).show();
+                    showToast("解析出错");
                     enterHome();
                     break;
             }
@@ -65,11 +64,15 @@ public class MainActivity extends Activity {
     };
 
     private void init(){
+        //获取启动时间
         long startTime = System.currentTimeMillis();
+        //获取当前版本信息
         version = (TextView)findViewById(R.id.version);
         version.setText("beta " + getVersionName());
         CheckUpdate.old_version = getVersionName();
+        //检测是否有更新
         CheckUpdate.checkUpdate(getString(R.string.update_url), getVersionName(), handler, startTime);
+        //启动界面过渡动画
         AlphaAnimation travle = new AlphaAnimation(0.1f,1.0f);
         travle.setDuration(800);
         findViewById(R.id.actvity_welcome).startAnimation(travle);
@@ -78,7 +81,6 @@ public class MainActivity extends Activity {
     获取版本号
      */
     private String getVersionName(){
-        //管理手机的APK
         PackageManager pm = getPackageManager();
         PackageInfo pinfo = null;
         try {
@@ -88,9 +90,6 @@ public class MainActivity extends Activity {
         }
         return pinfo.versionName;
     }
-
-
-
 
     /*
     进入主界面
@@ -123,5 +122,11 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    /*
+    显示Toast
+     */
+    private void showToast(String text){
+        Toast.makeText(getApplicationContext(),text,Toast.LENGTH_SHORT).show();
     }
 }

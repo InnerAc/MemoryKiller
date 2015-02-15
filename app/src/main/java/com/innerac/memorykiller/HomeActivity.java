@@ -34,15 +34,15 @@ import java.util.List;
 
 public class HomeActivity extends Activity {
 
-    private TextView running_process_count;
-    private TextView leave_mem_info;
-    private LinearLayout ll_loading;
-    private ListView lv_task_manager;
-    private List<TaskInfo> allTaskInfos;
-    private List<TaskInfo> useTaskInfos;
-    private List<TaskInfo> sysTaskInfos;
-    private TextView tv_status;
-    private TaskManagerAdapter adapter;
+    private TextView running_process_count;     //显示运行时进程数
+    private TextView leave_mem_info;            //显示剩余内存
+    private LinearLayout ll_loading;            //布局控件,显示加载图片
+    private ListView lv_task_manager;           //显示进程列表
+    private List<TaskInfo> allTaskInfos;        //所有的进程列表
+    private List<TaskInfo> useTaskInfos;        //用户进程列表
+    private List<TaskInfo> sysTaskInfos;        //系统进程列表
+    private TextView tv_status;                 //当前显示列表状态
+    private TaskManagerAdapter adapter;         //进程列表适配器
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +61,10 @@ public class HomeActivity extends Activity {
 
         fillDate();
 
+        /*
+        列表滚动监听
+        在tv_stauts中显示当前显示列表的状态
+         */
         lv_task_manager.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -78,6 +82,11 @@ public class HomeActivity extends Activity {
                 }
             }
         });
+
+        /*
+        列表Item点击事件监听
+        点击后选中,再次点击取消选择
+         */
         lv_task_manager.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -112,13 +121,17 @@ public class HomeActivity extends Activity {
      */
     private void fillDate() {
 
+        //显示加载动画
         ll_loading.setVisibility(View.VISIBLE);
+        //开启线程用于更新运行程序列表
         new Thread(){
             public void run(){
 
+                //获取所有运行中的进程
                 allTaskInfos = TaskInfoProvider.getTaskInfos(getApplicationContext());
                 useTaskInfos = new ArrayList<TaskInfo>();
                 sysTaskInfos = new ArrayList<TaskInfo>();
+                //进程分类(系统进程,用户进程)
                 for(TaskInfo info:allTaskInfos){
                     if(info.isUserTask()){
                         useTaskInfos.add(info);
@@ -126,10 +139,13 @@ public class HomeActivity extends Activity {
                         sysTaskInfos.add(info);
                     }
                 }
+                //开启UI线程
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        //关闭加载动画
                         ll_loading.setVisibility(View.INVISIBLE);
+                        //适配列表
                         if(adapter == null){
                             adapter = new TaskManagerAdapter();
                             lv_task_manager.setAdapter(adapter);
@@ -144,27 +160,46 @@ public class HomeActivity extends Activity {
 
     }
 
-    private class TaskManagerAdapter extends BaseAdapter{
 
-        @Override
+
+    /*
+    设置标头
+     */
+    public void setTitle(){
+        running_process_count.setText("运行中进程: "+ SystemInfoTools.getRunningProcessCount(this));
+        long avamem = SystemInfoTools.getAvailMem(this);
+        long totmem = SystemInfoTools.getTotalMem(this);
+        leave_mem_info.setText("剩余/总内存: "+ Formatter.formatFileSize(this,avamem)+"/"+Formatter.formatFileSize(this,totmem));
+
+    }
+    /*
+    静态类,用于作用设置Item信息
+     */
+    static class ViewHolder{
+        ImageView iv_icon;
+        TextView tv_name;
+        TextView tv_memsize;
+        CheckBox cb_status;
+    }
+
+    /*
+    自定义适配器类
+     */
+    private class TaskManagerAdapter extends BaseAdapter {
+
         public int getCount() {
 
             return allTaskInfos.size()+2;
         }
-
-        @Override
         public Object getItem(int position) {
 
             return null;
         }
-
-        @Override
         public long getItemId(int position) {
 
             return 0;
         }
-
-        @Override
+        //适配器规则
         public View getView(int position, View convertView, ViewGroup parent) {
             TaskInfo tmpTaskInfo;
             if(position == 0){
@@ -175,24 +210,30 @@ public class HomeActivity extends Activity {
                 user_title.setTextColor(Color.WHITE);
                 return user_title;
             }else if(position == useTaskInfos.size()+1){
+                //系统进程标签
                 TextView sys_title = new TextView(getApplicationContext());
                 sys_title.setText("系统进程"+sysTaskInfos.size()+"个");
                 sys_title.setBackgroundColor(Color.GRAY);
                 sys_title.setTextColor(Color.WHITE);
                 return sys_title;
             }else if(position <= useTaskInfos.size()){
+                //显示用户进程
                 tmpTaskInfo = useTaskInfos.get(position-1);
             }else{
+                //显示系统进程
                 tmpTaskInfo = sysTaskInfos.get(position-2-useTaskInfos.size());
             }
 
             View view;
             ViewHolder holder;
             if(convertView != null && convertView instanceof RelativeLayout){
+                //该条目不是进程信息而是标题
                 view = convertView;
                 holder = (ViewHolder) view.getTag();
             }else{
-                view = View.inflate(getApplicationContext(),R.layout.list_task_item,null);
+                //获取定义好的布局
+                view = View.inflate(getApplicationContext(), R.layout.list_task_item,null);
+                //实例化holder
                 holder = new ViewHolder();
                 holder.iv_icon = (ImageView) view.findViewById(R.id.iv_icon);
                 holder.tv_name = (TextView) view.findViewById(R.id.tv_name);
@@ -200,26 +241,13 @@ public class HomeActivity extends Activity {
                 holder.cb_status = (CheckBox) view.findViewById(R.id.cb_status);
                 view.setTag(holder);
             }
+            //填充信息
             holder.iv_icon.setImageDrawable(tmpTaskInfo.getIcon());
             holder.tv_name.setText(tmpTaskInfo.getName());
-            holder.tv_memsize.setText("内存占用:"+Formatter.formatFileSize(getApplicationContext(),tmpTaskInfo.getMemsize()));
+            holder.tv_memsize.setText("内存占用:"+ Formatter.formatFileSize(getApplicationContext(), tmpTaskInfo.getMemsize()));
             holder.cb_status.setChecked(tmpTaskInfo.isChecked());
             return view;
         }
-    }
-
-    public void setTitle(){
-        running_process_count.setText("运行中进程: "+ SystemInfoTools.getRunningProcessCount(this));
-        long avamem = SystemInfoTools.getAvailMem(this);
-        long totmem = SystemInfoTools.getTotalMem(this);
-        leave_mem_info.setText("剩余/总内存: "+ Formatter.formatFileSize(this,avamem)+"/"+Formatter.formatFileSize(this,totmem));
-
-    }
-    static class ViewHolder{
-        ImageView iv_icon;
-        TextView tv_name;
-        TextView tv_memsize;
-        CheckBox cb_status;
     }
 
     @Override
@@ -243,7 +271,9 @@ public class HomeActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
-
+    /*
+    全选事件
+     */
     public void selectAll(View view){
         for (TaskInfo info:useTaskInfos){
             info.setChecked(true);
@@ -254,6 +284,9 @@ public class HomeActivity extends Activity {
         adapter.notifyDataSetChanged();
 
     }
+    /*
+    反选事件
+     */
     public void unSelectAll(View view){
         for (TaskInfo info:useTaskInfos){
             info.setChecked(!info.isChecked());
@@ -263,6 +296,9 @@ public class HomeActivity extends Activity {
         }
         adapter.notifyDataSetChanged();
     }
+    /*
+    清理事件
+     */
     public void killAll(View view){
         ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         for (TaskInfo info:useTaskInfos){
@@ -277,14 +313,19 @@ public class HomeActivity extends Activity {
         }
         fillDate();
     }
-    public void enterSetting(View view){
+    /*
+    更新事件
+     */
+    public void updateCheck(View view){
         if(CheckUpdate.is_update){
             showUpdateDialog();
         }else{
             showNotUpdateDialog();
         }
     }
-
+    /*
+    复写返回键,点击后结束应用
+     */
     public void onBackPressed(){
         //Log.i("tag","onBackPressed");
         //结束进程
@@ -293,12 +334,15 @@ public class HomeActivity extends Activity {
     }
 
     /*
-    升级
+    显示升级对话框
      */
     protected void showUpdateDialog() {
         UpdateManager um = new UpdateManager(this);
         um.checkUpdateInfo();
     }
+    /*
+    显示不用升级对话框
+     */
     protected void showNotUpdateDialog(){
         AlertDialog.Builder build = new AlertDialog.Builder(this);
         build.setTitle("应用更新");

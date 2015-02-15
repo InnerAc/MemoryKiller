@@ -27,14 +27,18 @@ public class CheckUpdate {
     public static final int NETWORD_ERRER = 3;
     public static final int JSON_ERRER = 4;
 
-    public static String new_version;
-    public static String new_description;
-    public static String new_apkurl;
-    public static boolean is_update;
-    public static String old_version;
+    public static String new_version;       //服务器上最新版本号
+    public static String new_description;   //服务器上最新版本描述
+    public static String new_apkurl;        //服务器上的应用地址
+    public static boolean is_update;        //是否需要升级
+    public static String old_version;       //当前版本号
 
     /*
     检查升级
+    * @ update_url  升级文件地址
+    * @ version     当前应用版本
+    * @ handler     传输信息的handler
+    * @ startTime   应用开始时间
      */
     public static void checkUpdate(final String update_url, final String version, final Handler handler, final long startTime){
         new Thread(){

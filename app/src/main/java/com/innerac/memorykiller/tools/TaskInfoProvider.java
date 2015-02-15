@@ -15,10 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by InnerAce on 2015/2/12.
+ *
  * 提供手机里面的进程信息
  */
 public class TaskInfoProvider {
+
+    /*
+    * 返回当前运行中的进程信息列表
+    * */
     public static List<TaskInfo> getTaskInfos(Context context) {
 
         List<TaskInfo> taskInfos = new ArrayList<TaskInfo>();

@@ -13,7 +13,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 /**
- * Created by InnerAce on 2015/2/12.
+ * 获取系统信息
  */
 public class SystemInfoTools {
 
@@ -34,7 +34,6 @@ public class SystemInfoTools {
     /*
     获取总内存
      */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static long getTotalMem(Context context){
 //4.0API以上
 //        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);

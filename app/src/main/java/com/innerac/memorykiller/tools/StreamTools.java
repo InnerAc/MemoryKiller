@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Created by InnerAce on 2015/2/11.
+ * 输入流转换为String
  */
 public class StreamTools {
     public static String readFromStream(InputStream is) throws IOException {
